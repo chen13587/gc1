@@ -120,27 +120,13 @@ MSH_CMD_EXPORT_ALIAS(at_client_test_init, at_client_init, initialize AT client);
 #endif
 
 /*
-初始化 
-ok! connect
-receive data
-
-
-*/
-
-
-/*
 iap固件升级平台:
-
 https://180.101.147.135:8843/index.html#/device
 账号：modou2017
 密码：Cldz2017~
-*/
-
-/*
 
 设备连接IP	180.101.147.115
 端口 5683
-
 
 */
 //currently 
@@ -174,7 +160,7 @@ void recv_func(void* parameter){
 int main(void){
 	
 	int i;
-	char* senddata="1";
+	char* senddata="chen";
 	struct sockaddr_in sockadd={0};
 	
 	at_socket_device_init();
@@ -211,7 +197,7 @@ int main(void){
 //			if(at_bind(sock1,(struct sockaddr*)&sockadd,sizeof(sockadd))>=0){
 				
 				for(;;){
-					//at_sendto(sock1,senddata,strlen(senddata),0,(struct sockaddr*)&sockadd,sizeof(sockadd));
+					at_sendto(sock1,senddata,strlen(senddata),0,(struct sockaddr*)&sockadd,sizeof(sockadd));
 					
 					rt_thread_delay(rt_tick_from_millisecond(5000));
 				}
