@@ -155,7 +155,6 @@ rt_uint32_t recv_thread_stack_size=sizeof(recv_thread_stack);
 char recvbuf[RECVSIZE]={0};
 int sock1=-1,res=0;
 
-
 void recv_func(void* parameter){
 	int recvlen=0,i=0;
 	int sdad_len=sizeof(struct sockaddr_in);
@@ -163,9 +162,10 @@ void recv_func(void* parameter){
 	for(;;){
 			recvlen=at_recvfrom(sock1,recvbuf,RECVSIZE,MSG_WAITALL,(struct sockaddr*)&parameter,&sdad_len);
 			rt_kprintf("\n\n<------ receive data\n");
-			for(i=0;i<recvlen;i++){
-				rt_kprintf("%c",recvbuf[i]);
-			}
+//			for(i=0;i<recvlen;i++){
+//				rt_kprintf("%c",recvbuf[i]);
+//			}
+			rt_kprintf("%s",recvbuf);
 			rt_kprintf("\n<-------------------\n");
 			rt_memset(recvbuf,0,RECVSIZE);
 	}
@@ -211,7 +211,7 @@ int main(void){
 //			if(at_bind(sock1,(struct sockaddr*)&sockadd,sizeof(sockadd))>=0){
 				
 				for(;;){
-					at_sendto(sock1,senddata,strlen(senddata),0,(struct sockaddr*)&sockadd,sizeof(sockadd));
+					//at_sendto(sock1,senddata,strlen(senddata),0,(struct sockaddr*)&sockadd,sizeof(sockadd));
 					
 					rt_thread_delay(rt_tick_from_millisecond(5000));
 				}
