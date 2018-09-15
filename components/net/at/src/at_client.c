@@ -726,7 +726,6 @@ static rt_err_t at_client_rx_ind(rt_device_t dev, rt_size_t size)
             rt_sem_release(at_client_table[idx].rx_notice);
         }
     }
-
     return RT_EOK;
 }
 
@@ -742,6 +741,7 @@ static int at_client_para_init(at_client_t client)
     static int at_client_num = 0;
     char name[RT_NAME_MAX];
 
+
     client->status = AT_STATUS_UNINITIALIZED;
 
     client->cur_recv_len = 0;
@@ -753,6 +753,7 @@ static int at_client_para_init(at_client_t client)
         goto __exit;
     }
 
+
     rt_snprintf(name, RT_NAME_MAX, "%s%d", AT_CLIENT_LOCK_NAME, at_client_num);
     client->lock = rt_mutex_create(name, RT_IPC_FLAG_FIFO);
     if (client->lock == RT_NULL)
@@ -760,7 +761,7 @@ static int at_client_para_init(at_client_t client)
         LOG_E("AT client initialize failed! at_client_recv_lock create failed!");
         result = -RT_ENOMEM;
         goto __exit;
-    }
+    }	
 
     rt_snprintf(name, RT_NAME_MAX, "%s%d", AT_CLIENT_SEM_NAME, at_client_num);
     client->rx_notice = rt_sem_create(name, 0, RT_IPC_FLAG_FIFO);
@@ -769,7 +770,7 @@ static int at_client_para_init(at_client_t client)
         LOG_E("AT client initialize failed! at_client_notice semaphore create failed!");
         result = -RT_ENOMEM;
         goto __exit;
-    }
+    }	
 
     rt_snprintf(name, RT_NAME_MAX, "%s%d", AT_CLIENT_RESP_NAME, at_client_num);
     client->resp_notice = rt_sem_create(name, 0, RT_IPC_FLAG_FIFO);

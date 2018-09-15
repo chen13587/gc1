@@ -69,4 +69,19 @@ extern void stm32_pin_mode_early(rt_base_t pin, rt_base_t mode);
 #define RT_USING_SI4438
 #define SI4438_SDN   7
 
+#define STM32_SRAM_END          (0x20000000 + STM32_SRAM_SIZE * 1024)
+
+#ifdef __CC_ARM
+    extern int Image$$RW_IRAM1$$ZI$$Limit;
+    #define HEAP_BEGIN  ((void *)&Image$$RW_IRAM1$$ZI$$Limit)
+#elif __ICCARM__
+    #pragma section="HEAP"
+    #define HEAP_BEGIN  (__segment_end("HEAP"))
+#else
+    extern int __bss_end;
+    #define HEAP_BEGIN  ((void *)&__bss_end)
+#endif
+
+#define HEAP_END    STM32_SRAM_END
+
 #endif

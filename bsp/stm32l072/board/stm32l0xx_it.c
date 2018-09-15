@@ -4,7 +4,7 @@
   * @brief   Interrupt Service Routines.
   ******************************************************************************
   *
-  * COPYRIGHT(c) 2016 STMicroelectronics
+  * COPYRIGHT(c) 2018 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -34,56 +34,84 @@
 #include "stm32l0xx_hal.h"
 #include "stm32l0xx.h"
 #include "stm32l0xx_it.h"
+#include "rtthread.h"
 
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DMA_HandleTypeDef hdma_adc;
 
 /******************************************************************************/
-/*            Cortex-M0+ Processor Interruption and Exception Handlers         */
+/*            Cortex-M0+ Processor Interruption and Exception Handlers         */ 
 /******************************************************************************/
+
 
 /**
-* @brief This function handles Non maskable Interrupt.
+* @brief This function handles System tick timer.
 */
-void NMI_Handler(void)
+void SysTick_Handler(void)
 {
-  /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
+  /* USER CODE BEGIN SysTick_IRQn 0 */
+	rt_interrupt_enter();
 
-  /* USER CODE END NonMaskableInt_IRQn 0 */
-  /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
+	rt_tick_increase();
 
-  /* USER CODE END NonMaskableInt_IRQn 1 */
+	/* leave interrupt */
+	rt_interrupt_leave();
+  /* USER CODE END SysTick_IRQn 0 */
+  HAL_IncTick();
+  HAL_SYSTICK_IRQHandler();
+  /* USER CODE BEGIN SysTick_IRQn 1 */
+
+  /* USER CODE END SysTick_IRQn 1 */
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  /* Prevent unused argument(s) compilation warning */
 }
 
 
-/**
-* @brief This function handles System service call via SWI instruction.
-*/
-void SVC_Handler(void)
+void EXTI0_1_IRQHandler(void)
 {
-  /* USER CODE BEGIN SVC_IRQn 0 */
-
-  /* USER CODE END SVC_IRQn 0 */
-  /* USER CODE BEGIN SVC_IRQn 1 */
-
-  /* USER CODE END SVC_IRQn 1 */
+    rt_interrupt_enter();
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+    rt_interrupt_leave();
 }
 
-/**
-* @brief This function handles Pendable request for system service.
-*/
+void EXTI2_3_IRQHandler(void)
+{
+    rt_interrupt_enter();
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_3);
+    rt_interrupt_leave();
+}
 
-/******************************************************************************/
-/* STM32L0xx Peripheral Interrupt Handlers                                    */
-/* Add here the Interrupt Handlers for the used peripherals.                  */
-/* For the available peripheral interrupt handler names,                      */
-/* please refer to the startup file (startup_stm32l0xx.s).                    */
-/******************************************************************************/
+void EXTI4_15_IRQHandler(void)
+{
+    rt_interrupt_enter();
+   // rt_kprintf("EXTI4_15_IRQHandler\n");
+    //Sys_changedata.alarm=1;
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_7);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_8);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_12);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_14);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_15);
+    rt_interrupt_leave();
+}
+
+
 
 /* USER CODE BEGIN 1 */
-
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

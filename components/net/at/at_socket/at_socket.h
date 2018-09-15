@@ -60,6 +60,7 @@ enum at_socket_type
     AT_SOCKET_INVALID   = 0,
     AT_SOCKET_TCP       = 0x10,      /* TCP IPv4 */
     AT_SOCKET_UDP       = 0x20,      /* UDP IPv4 */
+	AT_SOCKET_IOT=0x40,
 };
 
 typedef enum
@@ -145,6 +146,8 @@ void at_freeaddrinfo(struct addrinfo *ai);
 struct at_socket *at_get_socket(int socket);
 void at_scoket_device_register(const struct at_device_ops *ops);
 
+
+int at_socket_device_init(void);
 #ifndef RT_USING_SAL
 
 #define socket(domain, type, protocol)                      at_socket(domain, type, protocol)

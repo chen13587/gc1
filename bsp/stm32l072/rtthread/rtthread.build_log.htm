@@ -1,0 +1,77 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: μVision V5.14.2
+Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 1 Microsoft, Microsoft, LIC=50DZ9-4BD1B-XB5EC-7F40R-SU4XG-QM47Y
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Professional  Version: 5.24.1
+Toolchain Path:  E:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 5 (build 528)
+Assembler:       Armasm.exe V5.06 update 5 (build 528)
+Linker/Locator:  ArmLink.exe V5.06 update 5 (build 528)
+Library Manager: ArmAr.exe V5.06 update 5 (build 528)
+Hex Converter:   FromElf.exe V5.06 update 5 (build 528)
+CPU DLL:         SARMCM3.DLL V5.24.1
+Dialog DLL:      DARMCM1.DLL V1.18.0.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.1.0
+Dialog DLL:      TARMCM1.DLL V1.13.0.0
+ 
+<h2>Project:</h2>
+C:\Users\C00347\Desktop\work\task\rt-thread\bsp\stm32l072\project.uvprojx
+Project File Date:  09/11/2018
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'E:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'stm32l072'
+compiling at_socket_esp8266.c...
+packages\at_device-latest\at_socket_esp8266.c(215): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *restrict"
+        sprintf(&result,"%02x",tmp);
+packages\at_device-latest\at_socket_esp8266.c(237): warning:  #177-D: variable "t"  was declared but never referenced
+                size_t i,j,offset=0,t=0;
+packages\at_device-latest\at_socket_esp8266.c(440): warning:  #177-D: variable "socket"  was declared but never referenced
+      int socket = 0;
+packages\at_device-latest\at_socket_esp8266.c(485): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+                  
+t_client_recv(temp, sizeof(temp));
+packages\at_device-latest\at_socket_esp8266.c(488): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+                  
+t_client_recv(temp, bfsz - temp_size);
+packages\at_device-latest\at_socket_esp8266.c(494): warning:  #167-D: argument of type "const char *" is incompatible with parameter of type "const uint8_t *"
+                u16TOu8((&data[0]+offset),recv_buf,bfsz);
+packages\at_device-latest\at_socket_esp8266.c(512): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *"
+          at_evt_cb_set[AT_SOCKET_EVT_RECV](socket, AT_SOCKET_EVT_RECV, recv_buf, bfsz);
+packages\at_device-latest\at_socket_esp8266.c(462): warning:  #177-D: variable "i"  was declared but never referenced
+                int i=0,offset=0,bfsz = 0;
+packages\at_device-latest\at_socket_esp8266.c(549): warning:  #144-D: a value of type "void (*)(char *, rt_size_t)" cannot be used to initialize an entity of type "void (*)(const char *, rt_size_t)"
+          {"+CGATT:0",                                  "\r\n",           urc_iot_connect_status},
+packages\at_device-latest\at_socket_esp8266.c(550): warning:  #144-D: a value of type "void (*)(char *, rt_size_t)" cannot be used to initialize an entity of type "void (*)(const char *, rt_size_t)"
+          {"+CGATT:1",                                  "\r\n",           urc_iot_connect_status},                      
+packages\at_device-latest\at_socket_esp8266.c(568): warning:  #177-D: variable "wait_num"  was declared but never referenced
+                int wait_num=20,arg=0;
+packages\at_device-latest\at_socket_esp8266.c(569): warning:  #177-D: variable "signal_strength"  was declared but never referenced
+                int signal_strength=0,bit_error_rate=0;         //信号强度，误码率
+packages\at_device-latest\at_socket_esp8266.c(569): warning:  #177-D: variable "bit_error_rate"  was declared but never referenced
+                int signal_strength=0,bit_error_rate=0;         //信号强度，误码率
+packages\at_device-latest\at_socket_esp8266.c(47): warning:  #177-D: function "at_socket_event_recv"  was declared but never referenced
+  static int at_socket_event_recv(uint32_t event, uint32_t timeout, rt_uint8_t option)
+packages\at_device-latest\at_socket_esp8266.c(415): warning:  #177-D: function "urc_send_func"  was declared but never referenced
+  static void urc_send_func(const char *data, rt_size_t size)
+packages\at_device-latest\at_socket_esp8266.c(529): warning:  #177-D: function "urc_func"  was declared but never referenced
+  static void urc_func(const char *data, rt_size_t size){
+packages\at_device-latest\at_socket_esp8266.c: 16 warnings, 0 errors
+linking...
+Program Size: Code=70788 RO-data=10148 RW-data=788 ZI-data=5652  
+".\rtthread\rtthread.bin" - 0 Error(s), 16 Warning(s).
+
+<h2>Collection of Component include folders:</h2>
+  C:\Users\C00347\Desktop\work\task\rt-thread\bsp\stm32l072\RTE
+  E:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L0xx\Include
+
+<h2>Collection of Component Files used:</h2>
+</pre>
+</body>
+</html>

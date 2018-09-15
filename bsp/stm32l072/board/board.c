@@ -20,7 +20,7 @@
 #endif
 
 #include "board.h"
-#include "usart.h"
+#include "drv_usart.h"
 
 /**
  * @addtogroup STM32
@@ -39,50 +39,156 @@ void NVIC_Configuration(void)
 {
 //    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 }
-
-/**
- * This RCC initial for system.
- * use HSE clock source
- * HSE = 20MHZ; sysclk = 20MHZ
- * sysclk source is HSE
- * AHB prescaler is 1, HCLK = SYSCKL = SystemCoreClock = 20MHZ
- */
-static void RCC_Configuration(void)
+void _Error_Handler(char *file, int line)
 {
-    RCC_ClkInitTypeDef ClkInit = {0};
-    RCC_OscInitTypeDef OscInit = {0};
-	
-	HAL_RCC_DeInit();
-	
-    /* Enable HSI Oscillator and Activate PLL with HSI as source */
-    OscInit.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-    OscInit.HSIState = RCC_HSI_ON;
-	OscInit.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-    OscInit.PLL.PLLState = RCC_PLL_ON;
-    OscInit.PLL.PLLDIV = RCC_PLLDIV_2;
-    OscInit.PLL.PLLMUL = RCC_PLLMUL_4;
-    OscInit.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-    if (HAL_RCC_OscConfig(&OscInit) != HAL_OK)
-    {
-        RT_ASSERT(RT_NULL);
-    }
-
-    /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
-    clocks dividers */
-    ClkInit.ClockType = RCC_CLOCKTYPE_SYSCLK |
-                        RCC_CLOCKTYPE_HCLK |
-                        RCC_CLOCKTYPE_PCLK1 |
-                        RCC_CLOCKTYPE_PCLK2;
-
-    ClkInit.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-    ClkInit.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    ClkInit.APB1CLKDivider = RCC_HCLK_DIV1;
-    ClkInit.APB2CLKDivider = RCC_HCLK_DIV1;
-    if (HAL_RCC_ClockConfig(&ClkInit, FLASH_LATENCY_1) != HAL_OK)
-    {
-        RT_ASSERT(RT_NULL);
-    }
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  while(1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
 }
+
+#if 1
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+
+  RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_PeriphCLKInitTypeDef PeriphClkInit;
+
+    /**Configure the main internal regulator output voltage 
+    */
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+    /**Configure LSE Drive Capability 
+    */
+  HAL_PWR_EnableBkUpAccess();
+
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
+
+    /**Initializes the CPU, AHB and APB busses clocks 
+    */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_8;
+  RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_2;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Initializes the CPU, AHB and APB busses clocks 
+    */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_USART2
+                              |RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_RTC;
+  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_SYSCLK;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_PCLK1;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure the Systick interrupt time 
+    */
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/RT_TICK_PER_SECOND);
+
+    /**Configure the Systick 
+    */
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+}
+#else
+void SystemClock_Config(void)
+{
+	RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_PeriphCLKInitTypeDef PeriphClkInit;
+
+    /**Configure the main internal regulator output voltage 
+    */
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+    /**Configure LSE Drive Capability 
+    */
+  HAL_PWR_EnableBkUpAccess();
+
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
+
+    /**Initializes the CPU, AHB and APB busses clocks 
+    */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_8;
+  RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_2;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Initializes the CPU, AHB and APB busses clocks 
+    */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_USART2
+                              |RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_RTC;
+  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_PCLK1;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure the Systick interrupt time 
+    */
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/RT_TICK_PER_SECOND);
+
+    /**Configure the Systick 
+    */
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+}
+#endif
 
 #ifdef PRINT_RCC_FREQ_INFO
 /**
@@ -114,44 +220,25 @@ void print_rcc_freq_info(void)
     rt_kprintf("\nPCLK2_Frequency is %dHZ", clkval);
 }
 #endif
-
-/**
- * This is the timer interrupt service routine.
- *
- */
-void SysTick_Handler(void)
-{
-	/* enter interrupt */
-	rt_interrupt_enter();
-
-	rt_tick_increase();
-
-	/* leave interrupt */
-	rt_interrupt_leave();
-}
 /**
  * This function will initial STM32 board.
  */
 void rt_hw_board_init()
 {
-	/* NVIC Configuration */
-	NVIC_Configuration();
 
-	/* Configure the SysTick */
-	RCC_Configuration();
-	SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND);
-
-    /* Call components board initial (use INIT_BOARD_EXPORT()) */
+    HAL_Init();
+    SystemClock_Config();
+	  hw_usart_init();
+#ifdef RT_USING_HEAP
+    rt_system_heap_init((void *)HEAP_BEGIN, (void *)HEAP_END);
+#endif
+#ifdef RT_USING_CONSOLE
+    rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
+#endif
 #ifdef RT_USING_COMPONENTS_INIT
     rt_components_board_init();
 #endif
-#ifdef RT_USING_CONSOLE
-	rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
-#endif
-    /* Print RCC freq info */
-#ifdef PRINT_RCC_FREQ_INFO
 	print_rcc_freq_info();
-#endif
 }
 
 long cmd_reset(int argc, char** argv)
